@@ -12,6 +12,13 @@ class BaseModel(models.Model):
         abstract = True
 
 
+class Publisher(BaseModel):
+    birth_date = models.DateField(null=True, blank=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="publisher"
+    )
+
+
 class Category(BaseModel):
     name = models.CharField(max_length=55)
     description = models.TextField(blank=True, null=True)
