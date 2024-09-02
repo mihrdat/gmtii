@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_filters",
     "drf_spectacular",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -119,3 +120,5 @@ SPECTACULAR_SETTINGS = {
 }
 
 BASE_BACKEND_URL = os.environ.get("BASE_BACKEND_URL")
+
+AUTH_USER_MODEL = "users.User"

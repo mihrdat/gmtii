@@ -1,1 +1,1 @@
-from .celery import celery
+from . import celery
