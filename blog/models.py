@@ -25,8 +25,8 @@ class Category(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
-class Video(BaseModel):
+class Content(BaseModel):
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to="blog/videos")
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    video = models.FileField(upload_to="blog/videos")
+    categories = models.ManyToManyField(Category)

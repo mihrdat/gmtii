@@ -1,8 +1,8 @@
 from rest_framework_nested import routers
-from .views import CategoryViewSet, VideoViewSet
+from .views import CategoryViewSet, ContentViewSet
 
 router = routers.DefaultRouter()
 router.register("categories", CategoryViewSet)
-router.register("videos", VideoViewSet)
+router.register("contents", ContentViewSet)
 
 urlpatterns = router.urls

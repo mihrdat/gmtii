@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Category, Video
-from .serializers import CategorySerializer, VideoSerializer
+from .models import Category, Content
+from .serializers import CategorySerializer, ContentSerializer
 from .pagination import DefaultLimitOffsetPagination
 
 
@@ -11,7 +11,7 @@ class CategoryViewSet(ModelViewSet):
     pagination_class = DefaultLimitOffsetPagination
 
 
-class VideoViewSet(ModelViewSet):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
+class ContentViewSet(ModelViewSet):
+    queryset = Content.objects.all()
+    serializer_class = ContentSerializer
     pagination_class = DefaultLimitOffsetPagination
