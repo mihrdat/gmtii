@@ -26,7 +26,7 @@ class Category(BaseModel):
 
 
 class Video(BaseModel):
-    title = models.CharField(max_length=55)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
-    video = models.FileField(upload_to="blog/videos")
+    file = models.FileField(upload_to="blog/videos")
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
