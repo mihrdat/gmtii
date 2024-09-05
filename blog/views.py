@@ -10,6 +10,8 @@ from rest_framework.mixins import (
     DestroyModelMixin,
 )
 
+from django_filters.rest_framework import DjangoFilterBackend
+
 from .models import Category, Content, Publisher
 from .serializers import (
     CategorySerializer,
@@ -20,6 +22,7 @@ from .serializers import (
 )
 from .pagination import DefaultLimitOffsetPagination
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+from .filters import ContentFilter, CategoryFilter
 
 User = get_user_model()
 
@@ -35,17 +38,14 @@ class PublisherViewSet(
     pagination_class = DefaultLimitOffsetPagination
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    @action(methods=["GET"], detail=True, serializer_class=ContentSerializer)
-    def contents(self, request, *args, **kwargs):
-        self.queryset = Content.objects.filter(user=self.get_object().user)
-        return self.list(request, *args, **kwargs)
-
 
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = DefaultLimitOffsetPagination
-    permission_classes = [IsOwnerOrReadOnly, IsAdminOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CategoryFilter
 
     def get_serializer_class(self):
         if self.action in ["partial_update", "update"]:
@@ -64,6 +64,8 @@ class ContentViewSet(
     serializer_class = ContentSerializer
     pagination_class = DefaultLimitOffsetPagination
     permission_classes = [IsOwnerOrReadOnly, IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ContentFilter
 
     def get_serializer_class(self):
         if self.action in ["partial_update", "update"]:
