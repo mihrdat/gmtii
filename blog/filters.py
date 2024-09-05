@@ -5,7 +5,7 @@ from .models import Content, Category
 class ContentFilter(FilterSet):
     class Meta:
         model = Content
-        fields = ["categories"]
+        fields = ["categories", "user"]
 
 
 class CategoryFilter(FilterSet):

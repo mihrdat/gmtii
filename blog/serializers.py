@@ -25,14 +25,35 @@ class PublisherSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+
+class SimpleContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Content
+        fields = [
+            "id",
+            "title",
+            "video",
+        ]
+
+
+class SimpleCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "description",
+            "user",
+        ]
+        read_only_fields = ["user"]
+
     def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["user"] = user
+        validated_data["user"] = self.context["request"].user
         return super().create(validated_data)
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    user = SimpleUserSerializer(read_only=True)
+    contents = SimpleContentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
@@ -41,14 +62,10 @@ class CategorySerializer(serializers.ModelSerializer):
             "name",
             "description",
             "user",
+            "contents",
             "created_at",
             "updated_at",
         ]
-
-    def create(self, validated_data):
-        user = self.context["request"].user
-        validated_data["user"] = user
-        return super().create(validated_data)
 
 
 class UpdateCategorySerializer(serializers.ModelSerializer):
@@ -60,19 +77,7 @@ class UpdateCategorySerializer(serializers.ModelSerializer):
         ]
 
 
-class SimpleCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = [
-            "id",
-            "name",
-            "description",
-        ]
-
-
 class ContentSerializer(serializers.ModelSerializer):
-    categories = SimpleCategorySerializer(many=True)
-
     class Meta:
         model = Content
         fields = [
@@ -80,7 +85,6 @@ class ContentSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "video",
-            "categories",
             "user",
             "created_at",
             "updated_at",

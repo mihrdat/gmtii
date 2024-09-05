@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import (
@@ -19,6 +18,7 @@ from .serializers import (
     UpdateContentSerializer,
     UpdateCategorySerializer,
     PublisherSerializer,
+    SimpleCategorySerializer,
 )
 from .pagination import DefaultLimitOffsetPagination
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
@@ -40,15 +40,24 @@ class PublisherViewSet(
 
 
 class CategoryViewSet(ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    queryset = (
+        Category.objects.prefetch_related("contents").select_related("user").all()
+    )
+    serializer_class = SimpleCategorySerializer
     pagination_class = DefaultLimitOffsetPagination
     permission_classes = [IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = CategoryFilter
 
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            self.queryset = self.queryset.filter(user=self.request.user)
+        return super().get_queryset()
+
     def get_serializer_class(self):
-        if self.action in ["partial_update", "update"]:
+        if self.action == "retrieve":
+            self.serializer_class = CategorySerializer
+        elif self.action in ["partial_update", "update"]:
             self.serializer_class = UpdateCategorySerializer
         return super().get_serializer_class()
 
@@ -60,7 +69,7 @@ class ContentViewSet(
     DestroyModelMixin,
     GenericViewSet,
 ):
-    queryset = Content.objects.all()
+    queryset = Content.objects.select_related("user").all()
     serializer_class = ContentSerializer
     pagination_class = DefaultLimitOffsetPagination
     permission_classes = [IsOwnerOrReadOnly, IsAdminOrReadOnly]
