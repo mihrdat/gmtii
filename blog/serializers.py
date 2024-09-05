@@ -26,6 +26,11 @@ class CategorySerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        return super().create(validated_data)
+
 
 class UpdateCategorySerializer(serializers.ModelSerializer):
     class Meta:
