@@ -33,7 +33,7 @@ class Content(BaseModel):
     description = models.TextField(blank=True, null=True)
     video = models.FileField(upload_to="blog/videos")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    categories = models.ManyToManyField(Category)
+    categories = models.ManyToManyField(Category, related_name="contents")
 
     def __str__(self):
         return self.title
