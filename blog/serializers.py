@@ -27,3 +27,13 @@ class ContentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+
+class UpdateContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Content
+        fields = [
+            "title",
+            "description",
+            "categories",
+        ]

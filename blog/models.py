@@ -29,4 +29,5 @@ class Content(BaseModel):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     video = models.FileField(upload_to="blog/videos")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     categories = models.ManyToManyField(Category)
