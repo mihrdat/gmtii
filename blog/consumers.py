@@ -76,6 +76,7 @@ class FileUploadConsumer(AsyncWebsocketConsumer):
             title=self.metadata["title"],
             description=self.metadata["description"],
             video=self.uploaded_file,
+            user=self.scope["user"],
         )
         categories = Category.objects.filter(id__in=self.metadata["categories"])
         content.categories.set(categories)

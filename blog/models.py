@@ -24,9 +24,16 @@ class Category(BaseModel):
     description = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class Content(BaseModel):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     video = models.FileField(upload_to="blog/videos")
-    categories = models.ManyToManyField(Category)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    categories = models.ManyToManyField(Category, related_name="contents")
+
+    def __str__(self):
+        return self.title
