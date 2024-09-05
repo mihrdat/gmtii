@@ -20,13 +20,13 @@ class Publisher(BaseModel):
 
 
 class Category(BaseModel):
-    name = models.CharField(max_length=55)
+    name = models.CharField(max_length=55, unique=True)
     description = models.TextField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Content(BaseModel):
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     video = models.FileField(upload_to="blog/videos")
     categories = models.ManyToManyField(Category)
