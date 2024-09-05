@@ -1,0 +1,18 @@
+secretGenerator:
+  - name: api-credentials
+    literals:
+      - secret-key=some-secret-key
+      - database-url=postgres://postgres:123321@postgres-service:5432/scribbly
+  - name: db-credentials
+    literals:
+      - password=123321
+resources:
+  - postgres-pv.yml
+  - postgres-pvc.yml
+  - postgres-deployment.yml
+  - postgres-service.yml
+  - api-pv.yml
+  - api-pvc.yml
+  - api-deployment.yml
+  - api-service.yml
+  - api-ingress.yml
