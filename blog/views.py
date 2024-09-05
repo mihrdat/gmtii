@@ -1,3 +1,7 @@
+from django.contrib.auth import get_user_model
+
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import (
     ListModelMixin,
@@ -6,15 +10,35 @@ from rest_framework.mixins import (
     DestroyModelMixin,
 )
 
-from .models import Category, Content
+from .models import Category, Content, Publisher
 from .serializers import (
     CategorySerializer,
     ContentSerializer,
     UpdateContentSerializer,
     UpdateCategorySerializer,
+    PublisherSerializer,
 )
 from .pagination import DefaultLimitOffsetPagination
 from .permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
+
+User = get_user_model()
+
+
+class PublisherViewSet(
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = Publisher.objects.all()
+    serializer_class = PublisherSerializer
+    pagination_class = DefaultLimitOffsetPagination
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @action(methods=["GET"], detail=True, serializer_class=ContentSerializer)
+    def contents(self, request, *args, **kwargs):
+        self.queryset = Content.objects.filter(user=self.get_object().user)
+        return self.list(request, *args, **kwargs)
 
 
 class CategoryViewSet(ModelViewSet):

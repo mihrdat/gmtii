@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Category, Content
+from .models import Category, Content, Publisher
 
 
 User = get_user_model()
@@ -12,9 +12,26 @@ class SimpleUserSerializer(serializers.ModelSerializer):
         fields = ["id", "email"]
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class PublisherSerializer(serializers.ModelSerializer):
     user = SimpleUserSerializer(read_only=True)
 
+    class Meta:
+        model = Publisher
+        fields = [
+            "id",
+            "birth_date",
+            "user",
+            "created_at",
+            "updated_at",
+        ]
+
+    def create(self, validated_data):
+        user = self.context["request"].user
+        validated_data["user"] = user
+        return super().create(validated_data)
+
+
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
@@ -53,7 +70,6 @@ class SimpleCategorySerializer(serializers.ModelSerializer):
 
 class ContentSerializer(serializers.ModelSerializer):
     categories = SimpleCategorySerializer(many=True)
-    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = Content
